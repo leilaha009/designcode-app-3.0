@@ -20,7 +20,7 @@ const Card = (props) => (
 export default Card;
 
 const Wrapper = styled.View`
-  margin-left: 10px;
+  margin-left: -40px;
 `;
 
 const Content = styled.View`
