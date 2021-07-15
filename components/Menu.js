@@ -3,6 +3,23 @@ import styled from "styled-components";
 import { Animated, TouchableOpacity, Dimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MenuItem from "./MenuItem";
+import { connect } from "react-redux";
+
+// use function mapStateToProps to turn Redux states into props for our component
+function mapStateToProps(state) {
+  return { action: state.action };
+}
+
+// use function mapDispatchToProps to send an action to Redux to change its states
+//this function connects to "action" in App.js
+function mapDispatchToProps(dispatch) {
+  return {
+    closeMenu: () =>
+      dispatch({
+        type: "CLOSE_MENU",
+      }),
+  };
+}
 
 const screenHeight = Dimensions.get("window").height;
 
@@ -13,16 +30,29 @@ class Menu extends React.Component {
 
   //when the component load for the first time
   componentDidMount() {
-    Animated.spring(this.state.top, {
-      toValue: 0,
-    }).start();
+    this.toggleMenu();
+  }
+
+  // bc the componentDidMount is only called one time at start,
+  //so use componentDidUpdate to reveive new update whenever there are changes to our states
+  componentDidUpdate() {
+    this.toggleMenu();
   }
 
   // when you click to touchable Opacity -> close view
   toggleMenu = () => {
-    Animated.spring(this.state.top, {
-      toValue: screenHeight,
-    }).start();
+    if (this.props.action == "openMenu") {
+      // Close
+      Animated.spring(this.state.top, {
+        toValue: 54,
+      }).start();
+    }
+    if (this.props.action == "closeMenu") {
+      // Open
+      Animated.spring(this.state.top, {
+        toValue: screenHeight,
+      }).start();
+    }
   };
 
   render() {
@@ -34,7 +64,7 @@ class Menu extends React.Component {
           <Subtitle>supersunflower.com</Subtitle>
         </Cover>
         <TouchableOpacity
-          onPress={this.toggleMenu}
+          onPress={this.props.closeMenu}
           style={{
             position: "absolute",
             top: 120,
@@ -63,7 +93,8 @@ class Menu extends React.Component {
   }
 }
 
-export default Menu;
+// export two fundtion above and Menu
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);
 
 const CloseView = styled.View`
   width: 44px;
@@ -76,6 +107,8 @@ const CloseView = styled.View`
 `;
 
 const Container = styled.View`
+  border-radius: 10px;
+  overflow: hidden;
   position: absolute;
   background: white;
   width: 100%;
