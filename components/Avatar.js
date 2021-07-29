@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { connect } from "react-redux";
 
 function mapStateToProps(state) {
   return {
@@ -24,7 +25,7 @@ class Avatar extends React.Component {
 
   componentDidMount() {
     //the link of uinames is danger, not load
-    fetch("https://uinames.com/api/?ext")
+    fetch("https://uifaces.co/api")
       .then((response) => response.json())
       .then((response) => {
         console.log(response);
